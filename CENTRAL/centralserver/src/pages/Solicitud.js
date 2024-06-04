@@ -11,7 +11,7 @@ export default function Picking() {
 
   useEffect(() => {
     // Obtener la información combinada de kits
-    fetch("http://localhost:5000/kits_info")
+    fetch("http://192.168.0.100:5000/kits_info")
       .then((response) => response.json())
       .then((data) => {
         console.log("Número de kits en Contenido:", data.contenidoCount);
@@ -63,7 +63,7 @@ export default function Picking() {
     const nombreUsuario = "NombreDelUsuario"; // Reemplaza esto con el método correcto para obtener el nombre del usuario logueado
 
     // Enviar el pedido inicial
-    fetch("http://localhost:5000/solicitar", {
+    fetch("http://192.168.0.100:5000/solicitar", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

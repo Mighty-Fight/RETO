@@ -12,7 +12,7 @@ const Asignacion = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/tag");
+        const response = await axios.get("http://192.168.0.100:5000/tag");
 
         if (response.data.length > 0) {
           const initialNombresKits = {};
@@ -36,7 +36,7 @@ const Asignacion = () => {
     const fetchNombreKit = async (tag) => {
       try {
         const nombreKitResponse = await axios.get(
-          `http://localhost:5000/nombrekit/${tag}`
+          `http://192.168.0.100:5000/nombrekit/${tag}`
         );
         return nombreKitResponse.data || "";
       } catch (error) {
@@ -48,7 +48,7 @@ const Asignacion = () => {
     const fetchIdKit = async (tag) => {
       try {
         const idKitResponse = await axios.get(
-          `http://localhost:5000/idkit/${tag}`
+          `http://192.168.0.100:5000/idkit/${tag}`
         );
         return idKitResponse.data || "";
       } catch (error) {
@@ -70,7 +70,7 @@ const Asignacion = () => {
 
   const handleGuardarNombreKit = async (tag) => {
     try {
-      await axios.post(`http://localhost:5000/nombrekit/${tag}`, {
+      await axios.post(`http://192.168.0.100:5000/nombrekit/${tag}`, {
         nombreKit: nombresKits[tag],
       });
       console.log(`Nombre de kit para el tag ${tag} guardado correctamente`);
@@ -86,7 +86,7 @@ const Asignacion = () => {
 
   const handleGuardarIdKit = async (tag) => {
     try {
-      await axios.post(`http://localhost:5000/idkit/${tag}`, {
+      await axios.post(`http://192.168.0.100:5000/idkit/${tag}`, {
         idKit: idsKits[tag],
       });
       console.log(`ID de kit para el tag ${tag} guardado correctamente`);

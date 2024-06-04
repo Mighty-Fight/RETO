@@ -40,7 +40,7 @@ function Estado() {
         // Realizar la consulta a la tabla correspondiente para la estación seleccionada
         try {
           const response = await fetch(
-            `http://localhost:5000/estaciones/${stationNumber}`
+            `http://192.168.0.100:5000/estaciones/${stationNumber}`
           );
           if (!response.ok) {
             throw new Error(
@@ -155,7 +155,7 @@ function Estado() {
     const descripcion = `Tiempo total de armado del Set: ${tiempoSet}`;
 
     // Enviar datos a la base de datos mediante POST
-    fetch("http://localhost:5000/sets", {
+    fetch("http://192.168.0.100:5000/sets", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -9,7 +9,7 @@ function Contenido() {
 
     useEffect(() => {
         const fetchData = () => {
-            fetch("http://localhost:5000/contenido")
+            fetch("http://192.168.0.100:5000/contenido")
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("No se pudo obtener la respuesta del servidor");
@@ -48,7 +48,7 @@ function Contenido() {
         setData(updatedData);
         setEditIndex(null);
 
-        fetch(`http://localhost:5000/contenido/${data[index].Kits}`, {
+        fetch(`http://192.168.0.100:5000/contenido/${data[index].Kits}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ function Contenido() {
         const newRow = { Kits: `Kit  ${newKitNumber}`, Contenido: '' };
         setData([...data, newRow]);
 
-        fetch("http://localhost:5000/contenido", {
+        fetch("http://192.168.0.100:5000/contenido", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

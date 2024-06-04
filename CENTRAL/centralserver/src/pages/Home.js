@@ -29,7 +29,7 @@ export default function Home({ setIsAuthenticated }) {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/verificarUsuario",
+        "http://192.168.0.100:5000/verificarUsuario",
         {
           codigoEstudiantil: usuario,
         }

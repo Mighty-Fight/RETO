@@ -44,7 +44,7 @@ function Pick() {
     };
 
     const updateInv = (ep) => {
-        fetch("http://localhost:5000/actualizarINV", {
+        fetch("http://192.168.0.100:5000/actualizarINV", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

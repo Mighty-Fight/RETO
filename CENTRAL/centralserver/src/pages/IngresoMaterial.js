@@ -21,7 +21,7 @@ function Ingresomaterial() {
 
   const fetchData = async (stationNumber) => {
     try {
-      const response = await fetch(`http://localhost:5000/estaciones/${stationNumber}`);
+      const response = await fetch(`http://192.168.0.100:5000/estaciones/${stationNumber}`);
       if (!response.ok) {
         throw new Error('Error al obtener los datos');
       }
@@ -50,7 +50,7 @@ function Ingresomaterial() {
   };
 
   const handleSaveChanges = () => {
-    fetch('http://localhost:5000/guardarCambios', {
+    fetch('http://192.168.0.100:5000/guardarCambios', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

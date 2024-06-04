@@ -77,7 +77,7 @@ function Eventos() {
         entrada: checkboxes.entrada ? "true" : "",
       }).toString();
 
-      const response = await fetch(`http://localhost:5000/eventos?${query}`);
+      const response = await fetch(`http://192.168.0.100:5000/eventos?${query}`);
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.statusText}`);
       }

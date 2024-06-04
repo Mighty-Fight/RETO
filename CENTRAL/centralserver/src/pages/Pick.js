@@ -33,7 +33,7 @@ function Pick() {
   useEffect(() => {
     // Función para obtener el último pedido realizado
     const fetchUltimoPedido = () => {
-      fetch("http://localhost:5000/ultimoPedido")
+      fetch("http://192.168.0.100:5000/ultimoPedido")
         .then((response) => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -71,7 +71,7 @@ function Pick() {
   };
 
   const updateInv = (ep) => {
-    fetch("http://localhost:5000/actualizarINV", {
+    fetch("http://192.168.0.100:5000/actualizarINV", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

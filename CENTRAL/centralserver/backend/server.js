@@ -10,8 +10,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 const db = mysql.createConnection({
-  host: "db-retorfid.cdsc040qszy0.us-east-2.rds.amazonaws.com",
-  user: "admin",
+  host: "localhost",
+  user: "root",
   password: "usuario123",
   database: "RETORFID",
 });

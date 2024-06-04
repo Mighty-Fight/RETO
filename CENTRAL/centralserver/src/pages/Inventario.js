@@ -8,7 +8,7 @@ function Inventario() {
 
   useEffect(() => {
     const fetchData = () => {
-      fetch("http://localhost:5000/michi")
+      fetch("http://192.168.0.100:5000/michi")
         .then((response) => {
           if (!response.ok) {
             throw new Error("No se pudo obtener la respuesta del servidor");
