@@ -96,30 +96,7 @@ function Pick() {
         return response.json();
       })
       .then((data) => {
-        console.log("Data received from server:", data);
-
-        if (!data.pedidoRealizado) {
-          console.error("pedidoRealizado is missing in the response data");
-          return;
-        }
-
-        const pedidoVerificado = data.pedidoRealizado
-          .split(",")
-          .map((num) => `Kit ${num}`);
-        const kitsVerificados = piezasPorVerificar.filter(
-          (kit) => !pedidoVerificado.includes(kit)
-        );
-        setPiezasPorVerificar(pedidoVerificado);
-        setPiezasVerificadas((prevState) => [
-          ...new Set([...prevState, ...kitsVerificados]),
-        ]);
-
-        if (data.descuentoPedido === "") {
-          setPopupVisible(true);
-        }
-
-        // Incrementa el contador de POST
-        setPostCount((prevCount) => prevCount + 1);
+        console.log(data.message);
       })
       .catch((error) => {
         console.error("There was an error with the fetch operation:", error);

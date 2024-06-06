@@ -763,118 +763,39 @@ app.get("/ultimoPedido", (req, res) => {
   );
 });
 
+
 app.post("/actualizarInventario", (req, res) => {
   const { EP } = req.body;
 
-  // Función para formatear la fecha y hora
-  function formatDateTime(dateTimeString) {
-    const dateObj = new Date(dateTimeString);
-    const formattedDate = dateObj.toLocaleString(); // Convierte el objeto Date a una cadena en formato legible
-    return formattedDate;
-  }
-
-  // Obtener la hora actual y formatearla
-  const currentDateTime = new Date().toISOString();
-  const formattedDate = formatDateTime(currentDateTime);
-
-  // Variable para almacenar el número de kit encontrado
-  let kitNumber = null;
-
-  // Variable para almacenar el pedido descuentado
-  let descuentoPedido = null;
-
-  // Verificar si el EP está en la tabla Datos
-  db.query("SELECT Nombre FROM Datos WHERE Tag = ?", [EP], (err, results) => {
+  // Verificar si el EP existe en la tabla Datos
+  db.query("SELECT * FROM Datos WHERE Tag = ?", [EP], (err, results) => {
     if (err) {
       console.error("Error al verificar el EP:", err);
       return res.status(500).json({ error: "Error interno del servidor" });
     }
 
-    if (results.length === 0) {
-      console.log(`No se pudo encontrar el número del Kit en el nombre para EP: ${EP}`);
-      return res.status(404).json({ error: "No se encontró el número del Kit en el nombre para el EP proporcionado" });
-    }
-
-    const nombre = results[0].Nombre; // Kit 2
-
-    // Extraer el número del Kit desde el nombre
-    const regex = /Kit (\d+)/;
-    const match = nombre.match(regex);
-
-    if (match) {
-      kitNumber = match[1]; // Aquí asignamos el número de kit encontrado
-      console.log(`Número del Kit del EP: ${kitNumber}`);
-    } else {
-      console.log(`No se pudo encontrar el número del Kit en el nombre: ${nombre}`);
-      return res.status(400).json({ error: `No se pudo encontrar el número del Kit en el nombre: ${nombre}` });
-    }
-
-    // Actualizar INV y Hora_salida_bodega en la tabla Datos
-    db.query(
-      "UPDATE Datos SET INV = 'NO', Hora_salida_bodega = ? WHERE Tag = ?",
-      [formattedDate, EP],
-      (updateErr, updateResults) => {
-        if (updateErr) {
-          console.error("Error al actualizar INV y Hora_salida_bodega:", updateErr);
-          return res.status(500).json({ error: "Error interno del servidor" });
-        }
-        console.log(`INV y Hora_salida_bodega actualizados para EP: ${EP}, ${currentDateTime}`);
-
-        // Verificar el pedido actual en la tabla Solicitud
-        db.query(
-          "SELECT Pedido FROM Solicitud ORDER BY ID DESC LIMIT 1",
-          (pedidoErr, pedidoResults) => {
-            if (pedidoErr) {
-              console.error("Error al verificar el Pedido en la tabla Solicitud:", pedidoErr);
-              return res.status(500).json({ error: "Error interno del servidor" });
-            }
-
-            const ultimoPedido = pedidoResults.length > 0 ? pedidoResults[0].Pedido : "";
-            console.log(`Último pedido en la tabla Solicitud: ${ultimoPedido}`);
-
-            // Verificar si kitNumber está dentro de ultimoPedido
-            if (ultimoPedido.includes(kitNumber)) {
-              const pedidoArray = ultimoPedido.split(",");
-              descuentoPedido = pedidoArray.filter(item => item !== kitNumber).join(",");
-              console.log(`Haz pickeado correctamente el Kit: ${kitNumber}`);
-
-              // Insertar el nuevo pedido en la tabla Solicitud
-              db.query(
-                "INSERT INTO Solicitud (Pedido) VALUES (?)",
-                [descuentoPedido],
-                (insertErr, insertResults) => {
-                  if (insertErr) {
-                    console.error("Error al insertar el nuevo pedido en la tabla Solicitud:", insertErr);
-                    return res.status(500).json({ error: "Error interno del servidor" });
-                  }
-                  console.log("Nuevo pedido insertado en la tabla Solicitud");
-
-                  return res.json({
-                    piezasPorVerificar: pedidoArray.filter(item => item !== kitNumber).join(","),
-                    piezasVerificadas: pedidoArray.filter(item => item === kitNumber).join(","),
-                    pedidoRealizado: ultimoPedido,
-                    descuentoPedido: descuentoPedido,
-                  });
-                }
-              );
-            } else {
-              console.log(`No fue solicitado el Kit: ${kitNumber}`);
-
-              return res.status(200).json({
-                piezasPorVerificar: 0,
-                piezasVerificadas: 0,
-                pedidoRealizado: ultimoPedido,
-                descuentoPedido: ultimoPedido,
-              });
-            }
+    if (results.length > 0) {
+      // Si se encuentra el EP, actualizar INV a 'ENCONTRADOPERRA'
+      db.query(
+        "UPDATE Datos SET INV = 'ENCONTRADOPERRA' WHERE Tag = ?",
+        [EP],
+        (updateErr, updateResults) => {
+          if (updateErr) {
+            console.error("Error al actualizar INV:", updateErr);
+            return res.status(500).json({ error: "Error interno del servidor" });
           }
-        );
-      }
-    );
+
+          console.log(`EP encontrado y actualizado: ${EP}`);
+          return res.json({ success: true, message: `EP encontrado y actualizado: ${EP}` });
+        }
+      );
+    } else {
+      // Si no se encuentra el EP, registrar un mensaje en la consola
+      console.log(`No se encontró un Tag igual a EP: ${EP}`);
+      return res.json({ success: false, message: `No se encontró un Tag igual a EP: ${EP}` });
+    }
   });
 });
-
-
 
 
 // Endpoint para crear la tabla 'Modo'
