@@ -735,12 +735,12 @@ while True:
                     try:
                         #id_kit = (list(nombres_tags.keys())).index(tags) % 5 + 1
                         # Insertar el tag en la tabla de la Estacion 1 con la hora de entrada
-                        cursor.execute("SELECT ID FROM Datos WHERE Tag = ?", (tags,))
+                        cursor.execute("SELECT ID FROM Datos WHERE Tag = %s", (tags,))
                         idd = cursor.fetchone()[0]
-                        cursor.execute("SELECT Kit FROM Datos WHERE Tag = ?", (tags,))
-                        kitt = cursor.fetchone()[0]
-                        print("kitt= ",kitt)
-                        cursor.execute("INSERT INTO Estacion_1 (ID, Tag, Kit, Hora_entrada) VALUES (%s, %s, %s, %s)", (idd, tags, kitt, obtener_hora_actual()))
+                        cursor.execute("SELECT Nombre FROM Datos WHERE Tag = %s", (tags,))
+                        Kit = cursor.fetchone()[0]
+                        print("Kit= ",Kit)
+                        cursor.execute("INSERT INTO Estacion_1 (ID, Tag, Kit, Hora_entrada) VALUES (%s, %s, %s, %s)", (idd, tags, Kit, obtener_hora_actual()))
                         conexion.commit()
                         lista_ceros_1.append(int(max_cero))
                         lista_hora_1.append(0)
