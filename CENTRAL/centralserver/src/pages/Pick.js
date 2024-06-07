@@ -34,41 +34,43 @@ function Pick() {
   }, []);
 
   useEffect(() => {
-    const fetchUltimoPedido = () => {
-      fetch("http://localhost:5000/ultimoPedido")
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          const pedido = data.pedidoRealizado;
-          if (pedido) {
-            const kits = pedido.split(",").map((num) => `Kit ${num}`);
-            setPiezasPorVerificar(kits);
-            setPedidoRealizado(kits);
-            setPiezasVerificadas([]);
-            if (initialPedidoRealizado.length === 0) {
-              setInitialPedidoRealizado(kits);
-            }
-          }
-        })
-        .catch((error) => {
-          console.error("There was an error with the fetch operation:", error);
-        });
-    };
-
     fetchUltimoPedido();
 
     const interval = setInterval(() => {
       if (piezasPorVerificar.length > 0) {
         fetchUltimoPedido();
       }
-    }, 2000); // Consulta cada 2 segundos
+    }, 5000); // Consulta cada 5 segundos
 
     return () => clearInterval(interval);
   }, [piezasPorVerificar, initialPedidoRealizado.length]);
+
+  const fetchUltimoPedido = () => {
+    fetch("http://localhost:5000/ultimoPedido")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const pedido = data.pedidoRealizado;
+        if (pedido) {
+          const kits = pedido.split(",").map((num) => `Kit ${num}`);
+          if (initialPedidoRealizado.length === 0) {
+            setPiezasPorVerificar(kits);
+            setInitialPedidoRealizado(kits);
+          } else {
+            const newKits = initialPedidoRealizado.filter((kit) => !kits.includes(kit));
+            setPiezasVerificadas((prevState) => [...prevState, ...newKits]);
+            setPiezasPorVerificar(kits);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("There was an error with the fetch operation:", error);
+      });
+  };
 
   const searchEP = (text) => {
     const regex = /EP:\s*([A-Z0-9]+)/;
@@ -97,6 +99,7 @@ function Pick() {
       })
       .then((data) => {
         console.log(data.message);
+        setTimeout(fetchUltimoPedido, 5000);
       })
       .catch((error) => {
         console.error("There was an error with the fetch operation:", error);

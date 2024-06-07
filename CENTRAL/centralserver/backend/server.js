@@ -743,31 +743,20 @@ app.post("/guardarCambios", (req, res) => {
 
 // Obtener el último pedido realizado
 app.get("/ultimoPedido", (req, res) => {
-  // Consultar el último pedido en la tabla Solicitud
-  db.query(
-    "SELECT Pedido FROM Solicitud ORDER BY ID DESC LIMIT 1",
-    (pedidoErr, pedidoResults) => {
-      if (pedidoErr) {
-        console.error(
-          "Error al verificar el Pedido en la tabla Solicitud:",
-          pedidoErr
-        );
-        res.status(500).send("Error interno del servidor");
-        return;
-      }
-
-      const ultimoPedido =
-        pedidoResults.length > 0 ? pedidoResults[0].Pedido : "";
-      res.json({ pedidoRealizado: ultimoPedido });
+  db.query("SELECT Pedido FROM Solicitud ORDER BY ID DESC LIMIT 1", (err, results) => {
+    if (err) {
+      console.error("Error al obtener el último pedido:", err);
+      return res.status(500).json({ error: "Error interno del servidor" });
     }
-  );
-});
 
+    const ultimoPedido = results.length > 0 ? results[0].Pedido : "";
+    res.json({ pedidoRealizado: ultimoPedido });
+  });
+});
 
 app.post("/actualizarInventario", (req, res) => {
   const { EP } = req.body;
 
-  // Verificar si el EP existe en la tabla Datos
   db.query("SELECT * FROM Datos WHERE Tag = ?", [EP], (err, results) => {
     if (err) {
       console.error("Error al verificar el EP:", err);
@@ -775,9 +764,8 @@ app.post("/actualizarInventario", (req, res) => {
     }
 
     if (results.length > 0) {
-      // Si se encuentra el EP, actualizar INV a 'ENCONTRADOPERRA'
       db.query(
-        "UPDATE Datos SET INV = 'ENCONTRADOPERRA' WHERE Tag = ?",
+        "UPDATE Datos SET INV = 'SI' WHERE Tag = ?",
         [EP],
         (updateErr, updateResults) => {
           if (updateErr) {
@@ -790,13 +778,11 @@ app.post("/actualizarInventario", (req, res) => {
         }
       );
     } else {
-      // Si no se encuentra el EP, registrar un mensaje en la consola
       console.log(`No se encontró un Tag igual a EP: ${EP}`);
       return res.json({ success: false, message: `No se encontró un Tag igual a EP: ${EP}` });
     }
   });
 });
-
 
 // Endpoint para crear la tabla 'Modo'
 app.post("/tablemode", (req, res) => {
